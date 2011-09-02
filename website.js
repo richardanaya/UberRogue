@@ -16,3 +16,27 @@ server.get(/^.*$/,
 );
 
 server.listen(port);
+
+var io = require('socket.io').listen(server);
+var x = 5;
+var y = 5;
+io.sockets.on('connection', function (socket) {
+    socket.emit('drawCharacter', { x: x, y:y, symbol:'@'});
+    socket.on('keyPressed', function(data) {
+
+        if(data == 87) {
+            y--;
+        }
+        if(data == 83) {
+            y++;
+        }
+        if(data == 65) {
+            x--;
+        }
+        if(data == 68) {
+            x++;
+        }
+
+        socket.emit('drawCharacter', { x: x, y:y, symbol:'@'});
+    });
+});

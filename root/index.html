@@ -1,11 +1,33 @@
 <html>
 <head>
     <title>UberRogue</title>
+    <script src="/js/jquery.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-Something awesome will be here.
-
-
-@.....
+<script>
+    var socket = io.connect();
+    socket.on('drawCharacter', function (data) {
+        ctx.fillText(data.symbol, data.x * 9, data.y * 18);
+    });
+</script>
+<canvas id="screen" width="720px" height="450px">
+</canvas>
+<script>
+    var ctx = document.getElementById('screen').getContext('2d');
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, 720, 450);
+    ctx.textBaseline = 'top';
+    for (var x = 0; x < 80; x++) {
+        for (var y = 0; y < 25; y++) {
+            ctx.font = "10px arial"
+            ctx.fillStyle = 'white';
+            ctx.fillText(".", x * 9, y * 18);
+        }
+    }
+    $(document).keydown(function(e) {
+        socket.emit('keyPressed', e.keyCode);
+    });
+</script>
 </body>
 </html>
