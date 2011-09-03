@@ -62,6 +62,6 @@ io.sockets.on('connection', function (socket) {
         }
 
         socket.emit('drawCharacter', { x: playerX, y:playerY, symbol:'@', color:'yellow', backgroundColor: 'black'});
-        socket.emit('drawCharacter', { x: playerX, y:playerY, symbol:'@', color:'yellow', backgroundColor: 'black'});
+        socket.broadcast.emit('drawCharacter', { x: playerX, y:playerY, symbol:'@', color:'yellow', backgroundColor: 'black'});
     });
 });
