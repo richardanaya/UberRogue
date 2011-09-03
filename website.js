@@ -22,8 +22,9 @@ io.enable('browser client minification');  // send minified client
 io.enable('browser client etag');          // apply etag caching logic based on version number
 io.set('log level', 1);                    // reduce logging
 io.set('transports', [                     // enable all transports (optional if you want flashsocket)
-    'websocket'
-  , 'flashsocket'
+//    'websocket'
+//  ,
+    'flashsocket'
   , 'htmlfile'
   , 'xhr-polling'
   , 'jsonp-polling'
@@ -48,5 +49,6 @@ io.sockets.on('connection', function (socket) {
         }
 
         socket.emit('drawCharacter', { x: x, y:y, symbol:'@'});
+        socket.broadcast.emit('drawCharacter', { x: x, y:y, symbol:'@'});
     });
 });
