@@ -9,9 +9,11 @@
         html {
             overflow: hidden;
         }
+
         .title {
             font-family: 'Francois One', sans-serif;
         }
+
         .content {
             position: absolute;
             left: 50%;
@@ -19,8 +21,9 @@
             padding: 0px;
             width: 740px;
         }
+
         .screenHolder {
-            box-shadow:4px 4px 10px #ABABAB;
+            box-shadow: 4px 4px 10px #ABABAB;
             width: 720px;
             -webkit-border-radius: 10px;
             -moz-border-radius: 10px;
@@ -29,37 +32,65 @@
             padding: 10px;
         }
     </style>
-    <script>
-        var socket = io.connect();
-        socket.on('drawCharacter', function (data) {
-            ctx.fillText(data.symbol, data.x * 9, data.y * 18);
-        });
-    </script>
 </head>
 
 <body>
 
 <div class="content"><br>
-<h1 class="title">@ UberRogue</h1>
-<div class="screenHolder">
-    <canvas id="screen" width="720px" height="450px">
-    </canvas>
-</div>
+
+    <h1 class="title">@ UberRogue</h1>
+
+    <div class="screenHolder">
+        <canvas id="screen" width="720px" height="450px">
+        </canvas>
+    </div>
 </div>
 <script>
-    var ctx = document.getElementById('screen').getContext('2d');
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, 720, 450);
-    ctx.textBaseline = 'top';
-    for (var x = 0; x < 80; x++) {
-        for (var y = 0; y < 25; y++) {
-            ctx.font = "10px arial"
-            ctx.fillStyle = 'white';
-            ctx.fillText(".", x * 9, y * 18);
-        }
-    }
-    $(document).keydown(function(e) {
-        socket.emit('keyPressed', e.keyCode);
+
+    var SCREEN_WIDTH = 720;
+    var SCREEN_HEIGHT = 450;
+    /*var SCREEN_COLUMNS = 80;
+     var SCREEN_ROWS = 25;
+     var FONT_SIZE = 10;*/
+    var SCREEN_COLUMNS = 40;
+    var SCREEN_ROWS = 13;
+    var CHAR_WIDTH = SCREEN_WIDTH / SCREEN_COLUMNS;
+    var CHAR_HEIGHT = SCREEN_HEIGHT / SCREEN_ROWS;
+    var FONT_SIZE = 20;
+
+
+    $(document).ready(function() {
+        var ctx = document.getElementById('screen').getContext('2d');
+        
+        var clearScreen = function () {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        };
+
+        var drawCharacter = function(symbol, color, backgroundColor, x, y) {
+            var dim = ctx.measureText(symbol);
+            var xOffset = (CHAR_WIDTH - dim.width) / 2;
+            var yOffset = (CHAR_HEIGHT - FONT_SIZE) / 2;
+            ctx.textBaseline = 'top';
+            ctx.font = FONT_SIZE + "px Francois-One"
+            ctx.fillStyle = backgroundColor;
+            ctx.fillRect(x * CHAR_WIDTH, y * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT);
+            ctx.fillStyle = color;
+            ctx.fillText(symbol, Math.floor(xOffset + x * CHAR_WIDTH), Math.floor(yOffset + y * CHAR_HEIGHT));
+        };
+
+        var socket = io.connect();
+        socket.on('drawCharacter', function (data) {
+            drawCharacter(data.symbol, data.color, data.backgroundColor, data.x, data.y);
+        });
+
+        socket.on('clearScreen', function (data) {
+            clearScreen();
+        });
+
+        $(document).keydown(function(e) {
+            socket.emit('keyPressed', e.keyCode);
+        });
     });
 </script>
 </body>

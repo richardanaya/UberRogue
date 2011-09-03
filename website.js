@@ -34,26 +34,34 @@ io.set('transports', [                     // enable all transports (optional if
     'xhr-polling',
     'jsonp-polling'
 ]);
-var x = 5;
-var y = 5;
+var playerX = 5;
+var playerY = 5;
+var SCREEN_COLUMNS = 40;
+var SCREEN_ROWS = 13;
 io.sockets.on('connection', function (socket) {
-    socket.emit('drawCharacter', { x: x, y:y, symbol:'@'});
-    socket.on('keyPressed', function(data) {
+    socket.emit('clearScreen');
+    for (var x = 0; x < SCREEN_COLUMNS; x++) {
 
+        for (var y = 0; y < SCREEN_ROWS; y++) {
+            socket.emit('drawCharacter', { x: x, y:y, symbol:'.', color:'green', backgroundColor: 'black'});
+        }
+    }
+    socket.emit('drawCharacter', { x: playerX, y:playerY, symbol:'@', color:'yellow', backgroundColor: 'black'});
+    socket.on('keyPressed', function(data) {
         if (data == 87) {
-            y--;
+            playerY--;
         }
         if (data == 83) {
-            y++;
+            playerY++;
         }
         if (data == 65) {
-            x--;
+            playerX--;
         }
         if (data == 68) {
-            x++;
+            playerX++;
         }
 
-        socket.emit('drawCharacter', { x: x, y:y, symbol:'@'});
-        socket.broadcast.emit('drawCharacter', { x: x, y:y, symbol:'@'});
+        socket.emit('drawCharacter', { x: playerX, y:playerY, symbol:'@', color:'yellow', backgroundColor: 'black'});
+        socket.emit('drawCharacter', { x: playerX, y:playerY, symbol:'@', color:'yellow', backgroundColor: 'black'});
     });
 });
