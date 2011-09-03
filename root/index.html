@@ -3,16 +3,46 @@
     <title>UberRogue</title>
     <script src="/js/jquery.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Francois+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-1.2.0.min.css">
+    <style>
+        .title {
+            font-family: 'Francois One', sans-serif;
+        }
+        .content {
+            position: absolute;
+            left: 50%;
+            margin-left: -360px;
+            padding: 0px;
+            width: 780px;
+        }
+        .screenHolder {
+            box-shadow:4px 4px 10px #ABABAB;
+            width: 720px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            background-color: #333;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        var socket = io.connect();
+        socket.on('drawCharacter', function (data) {
+            ctx.fillText(data.symbol, data.x * 9, data.y * 18);
+        });
+    </script>
 </head>
+
 <body>
-<script>
-    var socket = io.connect();
-    socket.on('drawCharacter', function (data) {
-        ctx.fillText(data.symbol, data.x * 9, data.y * 18);
-    });
-</script>
-<canvas id="screen" width="720px" height="450px">
-</canvas>
+
+<div class="content"><br>
+<h1 class="title">@ UberRogue</h1>
+<div class="screenHolder">
+    <canvas id="screen" width="720px" height="450px">
+    </canvas>
+</div>
+</div>
 <script>
     var ctx = document.getElementById('screen').getContext('2d');
     ctx.fillStyle = 'black';
