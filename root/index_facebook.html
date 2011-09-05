@@ -1,0 +1,124 @@
+<!--
+Part of (or All) the graphic tiles used in this program is the public
+domain roguelike tileset "RLTiles".
+Some of the tiles have been modified by YOURNAME.
+
+You can find the original tileset at:
+http://rltiles.sf.net
+-->
+<html>
+<head>
+    <title>UberRogue</title>
+    <script src="/js/jquery.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Francois+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-1.2.0.min.css">
+    <style>
+        html {
+            overflow: hidden;
+        }
+
+        .title {
+            margin-left: 37px;
+            font-family: 'Francois One', sans-serif;
+        }
+
+        .content {
+            position: absolute;
+            left: 50%;
+            margin-left: -370px;
+            padding: 0px;
+            width: 740px;
+        }
+
+        .screenHolder {
+            box-shadow: 4px 4px 10px #ABABAB;
+            width: 720px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            background-color: #333;
+            padding: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-25545018-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+</head>
+
+<body>
+
+<div class="content"><br>
+
+    <img src="images/uberrogue_32px.png" style="float:left;"/>
+    <h1 class="title">UberRogue</h1>
+
+    <div class="screenHolder">
+        <canvas id="screen" width="720px" height="450px">
+        </canvas>
+    </div>
+    <br/>
+</div>
+<script>
+
+    var SCREEN_WIDTH = 720;
+    var SCREEN_HEIGHT = 450;
+    /*var SCREEN_COLUMNS = 80;
+     var SCREEN_ROWS = 25;
+     var FONT_SIZE = 10;*/
+    var SCREEN_COLUMNS = 40;
+    var SCREEN_ROWS = 13;
+    var CHAR_WIDTH = SCREEN_WIDTH / SCREEN_COLUMNS;
+    var CHAR_HEIGHT = SCREEN_HEIGHT / SCREEN_ROWS;
+    var FONT_SIZE = 20;
+
+
+    $(document).ready(function() {
+        var ctx = document.getElementById('screen').getContext('2d');
+
+        var clearScreen = function () {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        };
+
+        var drawCharacter = function(symbol, color, backgroundColor, x, y) {
+            var dim = ctx.measureText(symbol);
+            var xOffset = (CHAR_WIDTH - dim.width) / 2;
+            var yOffset = (CHAR_HEIGHT - FONT_SIZE) / 2;
+            ctx.textBaseline = 'top';
+            ctx.font = FONT_SIZE + "px Francois-One"
+            ctx.fillStyle = backgroundColor;
+            ctx.fillRect(x * CHAR_WIDTH, y * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT);
+            ctx.fillStyle = color;
+            ctx.fillText(symbol, Math.floor(xOffset + x * CHAR_WIDTH), Math.floor(yOffset + y * CHAR_HEIGHT));
+        };
+
+        var socket = io.connect();
+        socket.on('drawCharacter', function (data) {
+            drawCharacter(data.symbol, data.color, data.backgroundColor, data.x, data.y);
+        });
+
+        socket.on('clearScreen', function (data) {
+            clearScreen();
+        });
+
+        $(document).keydown(function(e) {
+            socket.emit('keyPressed', e.keyCode);
+        });
+    });
+</script>
+</body>
+</html>
