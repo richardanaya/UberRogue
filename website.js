@@ -9,7 +9,7 @@ server.configure(
     }
 );
 
-server.post('/index.html',
+server.post('/index_facebook.html',
     function(req, res) {
         res.redirect('https://www.facebook.com/dialog/oauth?client_id=271155132913470&redirect_uri=http://uberrogue.com/index.html');
     }
