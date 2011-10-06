@@ -1,8 +1,15 @@
 {
-  "name": "ubermush",
-  "version": "0.0.1",
+  "name": "uberrogue",
+  "version": "0.0.1-6",
   "dependencies": {
     "express": "latest",
-    "socket.io":"latest"
+    "socket.io": "latest",
+    "policyfile": "0.0.x",
+    "uglify-js": "1.0.x",
+    "socket.io-client": "0.8.x"
+  },
+  "subdomain": "uberrogue",
+  "scripts": {
+    "start": "server.js"
   }
 }
